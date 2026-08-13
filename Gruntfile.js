@@ -33,13 +33,6 @@ module.exports = function (grunt) {
             }
         },
 
-        autoprefixer: {
-            main: {
-                src: "css/main-unprefixed.css",
-                dest: "css/main.css"
-            }
-        },
-
         shell : {
             jekyllServe : {
                 command : 'jekyll serve'
@@ -47,7 +40,11 @@ module.exports = function (grunt) {
 
             jekyllBuild : {
                 command : 'jekyll build'
-            }  
+            },
+
+            autoprefixer : {
+                command : 'npx postcss css/main-unprefixed.css -o css/main.css --use autoprefixer'
+            }
         },
 
         svgmin: {
@@ -79,7 +76,7 @@ module.exports = function (grunt) {
         watch: {
             stylesheets: {
                 files: ['_scss/**/*.scss'],
-                tasks: ['sass', 'autoprefixer', 'shell:jekyllBuild']
+                tasks: ['sass', 'shell:autoprefixer', 'shell:jekyllBuild']
             },
             scripts: {
                 files: ['js/**/*.js'],
@@ -102,7 +99,7 @@ module.exports = function (grunt) {
 
     require("load-grunt-tasks")(grunt);
 
-    // Define the tasks
+    grunt.registerTask('build', ['sass', 'shell:autoprefixer', 'concat', 'uglify', 'svgmin', 'svgstore']);
     grunt.registerTask('serve', ['shell:jekyllServe']);
     grunt.registerTask('default', ['watch']);
 }
